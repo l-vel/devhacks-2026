@@ -16,6 +16,74 @@ export async function loadWordList() {
  
 }
 
+//KNOWN WORD FUNCTIONS
+export async function getKnownMap() {
+    const res = await chrome.storage.local.get("knownWords");
+    return res["knownWords"] || {};
+}
+
+export async function isKnownWord(word) {
+    const knownWords = await getKnownMap();
+
+    return !!knownWords[cleanWord(word)];
+
+}
+
+export async function toggleKnownWord(word) {
+    const knownWords = await getKnownMap();
+
+    const key = cleanWord(word);
+    const isNew = !isKnownWord(key);
+
+    if (isNew) {
+        knownWords[key] = true;
+    }
+    else {
+         delete knownWords[key];
+    }  
+}
+
+export async function getSeenMap() {
+    const res = await chrome.storage.local.get("seenWords");
+    return res["seenWords"] || {};
+}
+
+
+//SEEN WORD FUNCTIONS
+export async function isSeenWord(word) {
+    const seenWords = await getSeenMap();
+
+    return !!seenWords[cleanWord(word)];
+
+}
+
+export async function toggleSeenWord(word) {
+    const seenWords = await getSeenMap();
+
+    const key = cleanWord(word);
+    const isNew = !isSeenWord(key);
+
+    if (isNew) {
+        seenWords[key] = true;
+    }
+    else {
+         delete seenWords[key];
+    }  
+}
+
+export async function isUnknownWord(word){
+
+    return !isKnownWord() && !isSeenWord();
+}
+
+
+
+function cleanWord(word) {
+  return word.toLowerCase().trim();
+}
+
+
+
 
 
 

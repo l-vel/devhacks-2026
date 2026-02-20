@@ -15,8 +15,8 @@
         "run_at":"document_end"
       }
     ],
-  "background": {
-    "service_worker": "service-worker.js",
-    "type": "module"
+    "background": {
+      "service_worker": "service-worker.js",
+      "type": "module"
   }
 }
