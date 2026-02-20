@@ -1,5 +1,4 @@
-
-async function loadWordList() {
+export async function loadWordList() {
     const url = chrome.runtime.getURL("spanish.json");
     const res = await fetch(url);
 
