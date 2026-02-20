@@ -17,6 +17,19 @@ export async function loadWordList() {
  
 }
 
+//KNOWN WORD FUNCTIONS
+export async function getKnownMap() {
+    const res = await chrome.storage.local.get("knownWords");
+    return res["knownWords"] || {};
+}
+
+export async function isKnownWord(word) {
+    const knownWords = await getKnownMap();
+
+    return !!knownWords[cleanWord(word)];
+
+}
+
 export async function toggleKnownWord(word) {
     const knownWords = await getKnownMap();
 
@@ -31,18 +44,39 @@ export async function toggleKnownWord(word) {
     }  
 }
 
-export async function getKnownMap() {
-    const res = await chrome.storage.local.get("knownWords");
-    return res["knownWords"] || {};
+export async function getSeenMap() {
+    const res = await chrome.storage.local.get("seenWords");
+    return res["seenWords"] || {};
 }
 
 
-export async function isKnownWord(word) {
-    const knownWords = await getKnownMap();
+//SEEN WORD FUNCTIONS
+export async function isSeenWord(word) {
+    const seenWords = await getSeenMap();
 
-    return !!knownWords[cleanWord(word)];
+    return !!seenWords[cleanWord(word)];
 
 }
+
+export async function toggleSeenWord(word) {
+    const seenWords = await getSeenMap();
+
+    const key = cleanWord(word);
+    const isNew = !isSeenWord(key);
+
+    if (isNew) {
+        seenWords[key] = true;
+    }
+    else {
+         delete seenWords[key];
+    }  
+}
+
+export async function isUnknownWord(word){
+
+    return !isKnownWord() && !isSeenWord();
+}
+
 
 
 function cleanWord(word) {
