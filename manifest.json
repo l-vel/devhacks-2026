@@ -1,0 +1,10 @@
+{
+  "name": "Language Learning App",
+  "description": "",
+  "version": "1.0",
+  "manifest_version": 1,
+  "action": {
+    "default_popup": "my-app/index.html",
+    "default_icon": "raccoon.png"
+  }
+}
