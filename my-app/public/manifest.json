@@ -1,10 +1,10 @@
 {
   "name": "Language Learning App",
-  "description": "",
+  "description": "Learn Spanish",
   "version": "1.0",
-  "manifest_version": 1,
+  "manifest_version": 3,
   "action": {
-    "default_popup": "my-app/index.html",
+    "default_popup": "index.html",
     "default_icon": "raccoon.png"
   }
 }
