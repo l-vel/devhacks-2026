@@ -34,6 +34,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
             else if (request.action === "REQUEST_WORD_STATUS") {
                 const wordStatus = await handleRequestWordStatus(request.word);
+                console.log(wordStatus)
                 sendResponse(wordStatus)
             }
 
@@ -130,8 +131,9 @@ async function handleWordUpdate(word, status) {
 }
 
 async function handleRequestWordStatus(word) {
-    const known = handleRequestKnownList();
-    const seen = handleRequestSeenList();
+    const known = await handleRequestKnownList();
+    const seen = await handleRequestSeenList();
+
 
     const checkKnown = known.includes(word);
     const checkSeen = seen.includes(word);
@@ -165,13 +167,13 @@ async function handleRequestActivityList() {
 
 async function handleRequestSeenList() {
     const rawData = await chrome.storage.local.get(["wordsSeen"]);
-    const seen = rawData.wordsSeen || {}
+    const seen = rawData.wordsSeen || []
     return seen;
 }
 
 async function handleRequestKnownList() {
     const rawData = await chrome.storage.local.get(["wordsKnown"]);
-    const known = rawData.wordsKnown || {}
+    const known = rawData.wordsKnown || []
 
     return known
 }

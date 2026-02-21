@@ -85,11 +85,11 @@ function processTextNode(node) {
             fragment.appendChild(span);
             span.onclick = function () {
 
-                // chrome.runtime.sendMessage({
-                //     action: "UPDATE_WORD_STATUS",
-                //     word: cleanPart,
-                //     status: "seen"
-                // });
+                chrome.runtime.sendMessage({
+                    action: "UPDATE_WORD_STATUS",
+                    word: cleanPart,
+                    status: "seen"
+                });
 
                 chrome.runtime.sendMessage({
                     action: "VIEWED_WORD"
@@ -153,7 +153,7 @@ async function adjustDocument() {
 addStyles()
 adjustDocument()
 
-function showWordDetails(word) {
+async function showWordDetails(word) {
 
   // remove old modal if exists
   const existing = document.getElementById("word-details-root");
@@ -202,7 +202,7 @@ function showWordDetails(word) {
   title.textContent = word;
 
   const closeBtn = document.createElement("button");
-  closeBtn.textContent = "XZZ";
+  closeBtn.textContent = "X";
   closeBtn.onclick = () => container.remove();
 
   header.appendChild(title);
@@ -210,14 +210,21 @@ function showWordDetails(word) {
   modal.appendChild(header);
 
   const options = ["Unknown", "Seen", "Known"];
-  let status = function() {
-    chrome.runtime.sendMessage({
-                    action: "REQUEST_WORD_STATUS",
-                    word: word
-                }, (response) => {
-                    return response
-                });
-            }
+  let status = "Unknown";
+
+    
+try {
+    const response = await chrome.runtime.sendMessage({
+        action: "REQUEST_WORD_STATUS",
+        word: word
+    });
+
+    status = response; 
+    console.log("Updated status:", status);
+} catch (error) {
+    console.error("Error communicating with background:", error);
+}
+
   const radios = document.createElement("div");
   radios.style.display = "flex";
   radios.style.gap = "10px";
