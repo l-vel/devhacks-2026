@@ -5,10 +5,7 @@ export async function loadWordList() {
 
     if (!res.ok) throw new Error(`Failed to load spanish.json.`);
 
-
     const wordList = await res.json();   
-
-
 
     const map = new Map();
     for (const entry of wordList) {
@@ -21,22 +18,14 @@ export async function loadWordList() {
 
 
 export async function loadTopWords(limit) {
-    const url = chrome.runtime.getURL("spanish.json");
-    const res = await fetch(url);
+    const res = await fetch("/spanish.json");
 
     if (!res.ok) throw new Error(`Failed to load spanish.json.`);
 
 
     const wordList = await res.json();   
 
-    wordList = wordList.slice(0, limit).map(entry => [entry.word, entry])
-
-    const map = new Map();
-    for (const entry of wordList) {
-        map.set(entry.word, entry);
-    }
-
-    return map;
+    return wordList.slice(0, limit); 
  
 }
 
