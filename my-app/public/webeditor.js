@@ -1,28 +1,38 @@
+var rawData = [];
+
+async function loadData() {
+  try {
+    const res = await fetch(chrome.runtime.getURL('spanish.json'));
+    rawData = await res.json();
+
+    // for (const wordObj of rawData) {
+    //   console.log(wordObj.word, "->", wordObj.english_translation);
+    // }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+
+
 function cleanWord(word) {
   return word.toLowerCase().trim();
 }
 
-
-async function loadWordList() {
-    const url = chrome.runtime.getURL("spanish.json");
-    const res = await fetch(url);
-    
-    print(res)
-    if (!res.ok) throw new Error(`Failed to load spanish.json.`);
-    
-    
-    const wordList = await res.json();   
+function loadWordList() {
     
     const map = new Map();
-    for (const entry of wordList) {
+    for (const entry of rawData) {
+        //console.log(entry.word);
         map.set(entry.word, entry);
     }
-    console.log("heyy")
     return map;
     
 }
 
-const spanishWords = loadWordList();
+
+// mapSpanishWords.set("historia", "test");
+// mapSpanishWords.set("programa", "test");
 
 function addStyles() {
   if (document.getElementById("spanish-style")) return;
@@ -30,7 +40,7 @@ function addStyles() {
   const style = document.createElement("style");
   style.id = "spanish-style";
   style.textContent = `
-    .spanish-highlight {
+    .spanish-word {
       background-color: yellow;
       color: red;
       font-weight: bold;
@@ -45,34 +55,37 @@ function processTextNode(node)
     const parent = node.parentNode;
 
     if(
-        !parent || parent.classList?.contains == "spanish-word"
-    )
-    {
-        return
-    }
+        !parent || parent.classList?.contains == "spanish-word" ||
+    parent.tagName === "SCRIPT" ||
+    parent.tagName === "STYLE" ||
+    parent.tagName === "NOSCRIPT"
+  ) {
+    return;
+  }
+
+    const mapSpanishWords = loadWordList();
 
     const text = node.nodeValue;
-    const parts = text.split();
+    const parts = text.split(" ");
 
     let found = false;
     const fragment = document.createDocumentFragment();
 
     parts.forEach(part => {
         let cleanPart = cleanWord(part);
-        if(spanishWords.get(cleanPart))
+        if(mapSpanishWords.get(cleanPart))
         {
             found = true;
 
             const span = document.createElement("span");
-            span.textContent = cleanWord;
+            span.textContent = cleanPart + " ";
             span.className = "spanish-word";
             fragment.appendChild(span);
-            console.log("found: " +  cleanWord)
+            // console.log("found: " +  cleanPart)
         }
         else
         {
-            console.log("heh")
-            fragment.appendChild(document.createTextNode(part))
+            fragment.appendChild(document.createTextNode(part + " "))
         }
     });
 
@@ -82,11 +95,17 @@ function processTextNode(node)
     }
 }
 
-function adjustDocument(){
+async function adjustDocument(){
+    await loadData();
+
     const treeWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-    
     const nodes = [];
     let node;
+
+    while ((node = treeWalker.nextNode())) {
+        nodes.push(node);
+    }
+
 
     nodes.forEach(processTextNode)
 
