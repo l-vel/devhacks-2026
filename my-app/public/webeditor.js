@@ -93,6 +93,24 @@ function processTextNode(node)
                 action: "VIEWED_WORD"
               });
 
+              chrome.runtime.sendMessage({
+                action: "REQUEST_SEEN_LIST"
+              }, (response) => {
+                console.log(response);
+              });
+
+              chrome.runtime.sendMessage({
+                action: "REQUEST_KNOWN_LIST"
+              }, (response) => {
+                console.log(response);
+              });
+
+              chrome.runtime.sendMessage({
+                action: "REQUEST_ACTIVITY_LIST"
+              }, (response) => {
+                console.log(response);
+              });
+
               console.log("hahahaha");
             }
 

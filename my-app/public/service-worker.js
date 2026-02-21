@@ -1,14 +1,37 @@
 //import './storage.js'
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    console.log("hi")
-    if (request.action === "UPDATE_WORD_STATUS") {
-    handleWordUpdate(request.word, request.status);
-    }
+    (
+    async() =>
+    {
 
-    if (request.action === "VIEWED_WORD") {
-        incrementWordsViewedToday();
-    }
+        if (request.action === "UPDATE_WORD_STATUS") {
+            handleWordUpdate(request.word, request.status);
+        }
+        
+        if (request.action === "VIEWED_WORD") {
+            incrementWordsViewedToday();
+        }
+        
+        if(request.action === "REQUEST_SEEN_LIST")
+        {
+            const data = await handleRequestSeenList()
+            sendResponse(data)
+        }
+        
+        if(request.action === "REQUEST_KNOWN_LIST")
+        {
+            const data = await handleRequestKnownList()
+            sendResponse(data)
+        }
+        
+        if(request.action === "REQUEST_ACTIVITY_LIST")
+        {
+            const data = await handleRequestActivityList()
+            sendResponse(data)
+        }
+        
+    })();
     return true;
 });
 
@@ -118,3 +141,25 @@ async function incrementWordsViewedToday()
     await chrome.storage.local.set({wordsDayTracker: cache}); 
 }
 
+async function handleRequestActivityList()
+{
+    const rawData = await chrome.storage.local.get(["wordsDayTracker"]);
+    const activty = rawData.wordsDayTracker || {}
+
+    return activty;
+}
+
+async function handleRequestSeenList()
+{
+    const rawData = await chrome.storage.local.get(["wordsSeen"]);
+    const seen = rawData.wordsSeen || {}
+    return seen;
+}
+
+async function handleRequestKnownList()
+{
+    const rawData = await chrome.storage.local.get(["wordsKnown"]);
+    const known = rawData.wordsKnown || {}
+
+    return known
+}
