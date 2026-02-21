@@ -85,36 +85,36 @@ function processTextNode(node) {
             fragment.appendChild(span);
             span.onclick = function () {
 
-                chrome.runtime.sendMessage({
-                    action: "UPDATE_WORD_STATUS",
-                    word: cleanPart,
-                    status: "seen"
-                });
+                // chrome.runtime.sendMessage({
+                //     action: "UPDATE_WORD_STATUS",
+                //     word: cleanPart,
+                //     status: "seen"
+                // });
 
                 chrome.runtime.sendMessage({
                     action: "VIEWED_WORD"
                 });
 
-                chrome.runtime.sendMessage({
-                    action: "REQUEST_SEEN_LIST"
-                }, (response) => {
-                    console.log("done")
-                    console.log(response);
-                });
+                // chrome.runtime.sendMessage({
+                //     action: "REQUEST_SEEN_LIST"
+                // }, (response) => {
+                //     console.log("done")
+                //     console.log(response);
+                // });
 
-                chrome.runtime.sendMessage({
-                    action: "REQUEST_KNOWN_LIST"
-                }, (response) => {
-                    console.log(response);
-                });
+                // chrome.runtime.sendMessage({
+                //     action: "REQUEST_KNOWN_LIST"
+                // }, (response) => {
+                //     console.log(response);
+                // });
 
-                chrome.runtime.sendMessage({
-                    action: "REQUEST_ACTIVITY_LIST"
-                }, (response) => {
-                    console.log(response);
-                });
+                // chrome.runtime.sendMessage({
+                //     action: "REQUEST_ACTIVITY_LIST"
+                // }, (response) => {
+                //     console.log(response);
+                // });
 
-                console.log("hahahaha");
+                // console.log("hahahaha");
             }
 
             fragment.appendChild(document.createTextNode(" "))
