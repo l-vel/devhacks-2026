@@ -11,12 +11,18 @@
   "content_scripts": [
       {
         "matches": ["<all_urls>"],  
-        "js":["webeditor.js"],
+        "js":["webeditor.js", "storage.js"],
         "run_at":"document_end"
       }
     ],
     "background": {
       "service_worker": "service-worker.js",
       "type": "module"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [ "spanish.json" ],
+      "matches": [ "<all_urls>" ]
+    }
+  ]
 }

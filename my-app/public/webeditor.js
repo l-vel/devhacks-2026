@@ -1,4 +1,26 @@
-import { cleanWord, loadWordList } from './storage.js'
+function cleanWord(word) {
+  return word.toLowerCase().trim();
+}
+
+
+async function loadWordList() {
+    const url = chrome.runtime.getURL("spanish.json");
+    const res = await fetch(url);
+    
+    print(res)
+    if (!res.ok) throw new Error(`Failed to load spanish.json.`);
+    
+    
+    const wordList = await res.json();   
+    
+    const map = new Map();
+    for (const entry of wordList) {
+        map.set(entry.word, entry);
+    }
+    console.log("heyy")
+    return map;
+    
+}
 
 const spanishWords = loadWordList();
 
