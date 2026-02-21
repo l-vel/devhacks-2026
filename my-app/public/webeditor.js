@@ -78,9 +78,10 @@ function processTextNode(node)
             found = true;
 
             const span = document.createElement("span");
-            span.textContent = cleanPart + " ";
+            span.textContent = cleanPart;
             span.className = "spanish-word";
             fragment.appendChild(span);
+            fragment.appendChild(document.createTextNode(" "))
             // console.log("found: " +  cleanPart)
         }
         else
