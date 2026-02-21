@@ -3,7 +3,7 @@
   "description": "Learn Spanish",
   "version": "1.0",
   "manifest_version": 3,
-  "permissions": ["storage"],
+  "permissions": ["storage", "unlimitedStorage"],
   "action": {
     "default_popup": "index.html",
     "default_icon": "raccoon.png"

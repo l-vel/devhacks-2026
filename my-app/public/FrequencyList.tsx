@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { loadTopWords } from './storage.js';
 import { Row } from "react-bootstrap";
