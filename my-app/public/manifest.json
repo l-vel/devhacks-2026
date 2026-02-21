@@ -1,3 +1,4 @@
+
 {
   "name": "Language Learning App",
   "description": "Learn Spanish",
@@ -25,5 +26,8 @@
       "resources": [ "spanish.json" ],
       "matches": [ "<all_urls>" ]
     }
-  ]
+  ],
+  "externally_connectable": {
+    "matches": ["http://localhost:5173/*"]
+  }
 }

@@ -4,14 +4,15 @@ import { PieChart } from '@mui/x-charts/PieChart';
 import { ActivityCalendar } from 'react-activity-calendar'
 import { Row, Col } from 'react-bootstrap';
 import type { ThemeInput } from 'react-activity-calendar'
-import { numKnownWords, numSeenWords, getNumWordsPerLevel } from './storage.js';
+import { getNumWordsPerLevel, requestSeenList } from './storage.js';
 
 
 export default function DataVisualization() {
 
-  const [numSeen, setNumSeen] = useState(0);
+  const [numSeen, setNumSeen] = useState(3);
   const [numKnown, setNumKnown] = useState(0);
-  const [numWordsPerLevel, setNumWordsPerLevel] = useState([]);
+  const [numWordsPerLevel, setNumWordsPerLevel] = useState([0, 0, 0]);
+
 
   const calendarTheme: ThemeInput = {
     light: ['#EBD4CB', '#B6465F'],
@@ -36,16 +37,22 @@ export default function DataVisualization() {
   ]
   useEffect(() => {
     async function loadStats() {
-     // const seenWords = await numSeenWords();
-     // const knownWords = await numKnownWords();
+      // const seenWords = await numSeenWords();
+      // const knownWords = await numKnownWords();
+
+
       const numWords = await getNumWordsPerLevel();
 
-    //  setNumSeen(seenWords);
-     // setNumKnown(knownWords);
+      setNumKnown(1);
+      //  setNumSeen(seenWords);
+      // setNumKnown(knownWords);
       setNumWordsPerLevel(numWords);
 
-    }
 
+      const res = await requestSeenList();
+      if (res.ok) setNumSeen(res.data.length);
+      else console.error(res.error);
+    }
     loadStats();
 
   }, [])

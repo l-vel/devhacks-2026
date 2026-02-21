@@ -1,39 +1,74 @@
 //import './storage.js'
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    (
-        async () => {
 
-            if (request.action === "UPDATE_WORD_STATUS") {
-                await handleWordUpdate(request.word, request.status);
-            }
 
-            else if (request.action === "VIEWED_WORD") {
-                await incrementWordsViewedToday();
-            }
+// chrome.runtime.onMessageExternal.addListener((request, sender, sendResponse) => {
+//   (async () => {
+//     try {
+//       if (request.action === "REQUEST_SEEN_LIST") {
+//         const res = await chrome.storage.local.get(["wordsSeen"]);
+//         const wordsSeen = res.wordsSeen || {};        
+//         const list = Object.keys(wordsSeen);            
+//         sendResponse({ ok: true, data: list });
+//         return;
+//       }
 
-            else if (request.action === "REQUEST_SEEN_LIST") {
-                const data = await handleRequestSeenList()
-                console.log(data)
-                sendResponse(data)
-            }
+//       sendResponse({ ok: false, error: "Unknown action" });
+//     } catch (e) {
+//       sendResponse({ ok: false, error: String(e?.message || e) });
+//     }
+//   })();
 
-            else if (request.action === "REQUEST_KNOWN_LIST") {
-                const data = await handleRequestKnownList()
-                sendResponse(data)
-            }
+//   return true;
+// });
 
-            else if (request.action === "REQUEST_ACTIVITY_LIST") {
-                const data = await handleRequestActivityList()
-                sendResponse(data)
-            }
+chrome.runtime.onMessageExternal.addListener((request, sender, sendResponse) => {
+  (async () => {
+    try {
+      if (request.action === "UPDATE_WORD_STATUS") {
+        await handleWordUpdate(request.word, request.status);
+        sendResponse({ ok: true });
+        return;
+      }
 
-            else if (request.action === "REQUEST_SET_SEED_DATA") {
-                await createSetSeededData()
-            }
+      if (request.action === "VIEWED_WORD") {
+        await incrementWordsViewedToday();
+        sendResponse({ ok: true });
+        return;
+      }
 
-        })();
-    return true;
+      if (request.action === "REQUEST_SEEN_LIST") {
+        const list = await handleRequestSeenList();
+        sendResponse({ ok: true, data: list });
+        return;
+      }
+
+      if (request.action === "REQUEST_KNOWN_LIST") {
+        const list = await handleRequestKnownList();
+        sendResponse({ ok: true, data: list });
+        return;
+      }
+
+      if (request.action === "REQUEST_ACTIVITY_LIST") {
+        const activity = await handleRequestActivityList();
+        sendResponse({ ok: true, data: activity });
+        return;
+      }
+
+      if (request.action === "REQUEST_SET_SEED_DATA") {
+        await createSetSeededData();
+        sendResponse({ ok: true });
+        return;
+      }
+
+      sendResponse({ ok: false, error: `Unknown action: ${request.action}` });
+    } catch (e) {
+      console.error("SW handler error:", e);
+      sendResponse({ ok: false, error: String(e?.message || e) });
+    }
+  })();
+
+  return true; 
 });
 
 async function handleWordUpdate(word, status) {
