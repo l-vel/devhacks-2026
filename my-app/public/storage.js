@@ -78,7 +78,7 @@ export async function isUnknownWord(word){
 
 
 
-function cleanWord(word) {
+export function cleanWord(word) {
   return word.toLowerCase().trim();
 }
 
