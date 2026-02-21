@@ -81,6 +81,21 @@ function processTextNode(node)
             span.textContent = cleanPart;
             span.className = "spanish-word";
             fragment.appendChild(span);
+            span.onclick= function() {
+              
+              chrome.runtime.sendMessage({
+                action: "UPDATE_WORD_STATUS",
+                word: cleanPart,
+                status: "seen"
+              });
+
+              chrome.runtime.sendMessage({
+                action: "VIEWED_WORD"
+              });
+
+              console.log("hahahaha");
+            }
+
             fragment.appendChild(document.createTextNode(" "))
             // console.log("found: " +  cleanPart)
         }
