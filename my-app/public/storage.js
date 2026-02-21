@@ -4,9 +4,11 @@ async function privateLoadWordList() {
     const res = await fetch(url);
     
     if (!res.ok) throw new Error(`Failed to load spanish.json.`);
+
     
     
     const wordList = await res.json();   
+
     
     const map = new Map();
     for (const entry of wordList) {
@@ -15,6 +17,21 @@ async function privateLoadWordList() {
     return map;
     
 }
+
+
+export async function loadTopWords(limit) {
+    const res = await fetch("/spanish.json");
+
+    if (!res.ok) throw new Error(`Failed to load spanish.json.`);
+
+
+    const wordList = await res.json();   
+
+    return wordList.slice(0, limit); 
+ 
+}
+
+
 export function loadWordList(){
     return privateLoadWordList();
 }
