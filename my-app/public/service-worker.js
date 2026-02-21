@@ -19,17 +19,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             }
 
             else if (request.action === "REQUEST_KNOWN_LIST") {
-                const data = await handleRequestKnownList()
-                sendResponse(data)
+                const data = await handleRequestKnownList();
+                sendResponse(data);
             }
 
             else if (request.action === "REQUEST_ACTIVITY_LIST") {
-                const data = await handleRequestActivityList()
-                sendResponse(data)
+                const data = await handleRequestActivityList();
+                sendResponse(data);
             }
 
             else if (request.action === "REQUEST_SET_SEED_DATA") {
-                await createSetSeededData()
+                await createSetSeededData();
+            }
+
+            else if (request.action === "REQUEST_WORD_STATUS") {
+                const wordStatus = await handleRequestWordStatus(request.word);
+                sendResponse(wordStatus)
             }
 
         })();
@@ -37,7 +42,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 async function handleWordUpdate(word, status) {
-    console.log("hi1")
     try {
         if (status === "seen") {
             const data = await chrome.storage.local.get(["wordsSeen"]);
@@ -66,7 +70,7 @@ async function handleWordUpdate(word, status) {
         }
         else if (status === "known") {
             const data = await chrome.storage.local.get(["wordsKnown"]);
-            const cache = data.wordsKnown || [];
+            const cache = data.wordsKnown ? JSON.parse(data.wordsKnown) : [];
             if (cache.includes(word)) return true;
             cache.push(word);
             try {
@@ -75,12 +79,14 @@ async function handleWordUpdate(word, status) {
                 //remove from seen 
 
                 const seenData = await chrome.storage.local.get(["wordsSeen"]);
-                const seenCache = seenData.wordsSeen || [];
-                const seenIndex = seenCache.wordsSeen.indexOf(word)
-                if (seenIndex >= 0) {
-                    seenCache.wordsKnown.splice(seenIndex, 1)
+                const seenCache = seenData.wordsSeen ? JSON.parse(seenData.wordsSeen) : [];
+                if (seenCache.length > 0) {
+                    const seenIndex = seenCache.wordsSeen.indexOf(word)
+                    if (seenIndex >= 0) {
+                        seenCache.wordsKnown.splice(seenIndex, 1)
+                    }
+                    await chrome.storage.local.set({ wordsKnown: JSON.stringify(seenCache) })
                 }
-                await chrome.storage.local.set({ wordsKnown: JSON.stringify(seenCache) })
             }
             catch (errIn) {
                 console.log(errIn)
@@ -96,25 +102,23 @@ async function handleWordUpdate(word, status) {
                 //remove from seen 
 
                 const seenData = await chrome.storage.local.get(["wordsSeen"]);
-                const seenCache = seenData ? seenData.wordsSeen : [];
+                const seenCache = seenData.wordsSeen ? JSON.parse(seenData.wordsSeen) : [];
                 const seenIndex = seenCache.wordsSeen.indexOf(word)
                 if (seenIndex >= 0) {
-                    seenCache.wordsKnown.splice(seenIndex, 1)
+                    seenCache.wordsKnown.splice(seenIndex, 1);
                 }
-                await chrome.storage.local.set({ wordsKnown: JSON.stringify(seenCache) })
+                await chrome.storage.local.set({ wordsKnown: JSON.stringify(seenCache) });
 
                 //remove from known
 
                 const knownData = await chrome.storage.local.get(["wordsKnown"]);
-                const knownCache = knownData.wordsKnown || [];
-                console.log(knownCache)
+                const knownCache = knownData.wordsKnown ? JSON.parse(knownData.wordsKnown) : [];
                 const knownIndex = knownCache.wordsKnown.indexOf(word)
                 if (knownIndex >= 0) {
-                    knownCache.wordsKnown.splice(knownIndex, 1)
+                    knownCache.wordsKnown.splice(seenIndex, 1);
                 }
-
-                await chrome.storage.local.set({ wordsKnown: JSON.stringify(knownCache) })
-            }
+                await chrome.storage.local.set({ wordsKnown: JSON.stringify(knownCache) });
+                }
             catch (errIn) {
                 console.log(errIn)
             }
@@ -125,13 +129,31 @@ async function handleWordUpdate(word, status) {
     }
 }
 
+async function handleRequestWordStatus(word) {
+    const known = handleRequestKnownList();
+    const seen = handleRequestSeenList();
+
+    const checkKnown = known.includes(word);
+    const checkSeen = seen.includes(word);
+
+    const returnString = checkKnown ? "Known" : checkSeen ? "Seen" : "Unknown";
+    console.log(returnString)
+    return returnString;
+}
+
 async function incrementWordsViewedToday() {
     const date = new Date().toISOString().split("T")[0]
 
     const data = await chrome.storage.local.get(["wordsDayTracker"]);
-    const cache = data.wordsDayTracker || {};
-    cache[date] = cache[date] + 1 || 1;
-    await chrome.storage.local.set({ wordsDayTracker: cache });
+    let cache = data.wordsDayTracker;
+    if (typeof cache === 'string') {
+        cache = JSON.parse(cache);
+    } else if (!cache) {
+        cache = {};
+    }
+    console.log(cache)
+    cache[date] = (cache[date] || 0) + 1;
+    await chrome.storage.local.set({ wordsDayTracker: cache});
 }
 
 async function handleRequestActivityList() {
@@ -161,7 +183,7 @@ async function createSetSeededData() {
     if (!check) {
         const seededData = {}
 
-        seededData["2025-02-21"] = 2
+        seededData['2025-02-21'] = 2
         seededData["2025-02-22"] = 4
         seededData["2025-02-23"] = 1
         seededData["2025-02-24"] = 3
