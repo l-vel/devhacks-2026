@@ -1,0 +1,29 @@
+{
+  "name": "Language Learning App",
+  "description": "Learn Spanish",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": ["storage", "unlimitedStorage"],
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "raccoon.png"
+  },
+  "content_scripts": [
+      {
+        "matches": ["<all_urls>"],  
+        "js":["webeditor.js"],
+        "run_at":"document_end",
+        "type":"module"
+      }
+    ],
+    "background": {
+      "service_worker": "service-worker.js",
+      "type": "module"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [ "spanish.json" ],
+      "matches": [ "<all_urls>" ]
+    }
+  ]
+}
