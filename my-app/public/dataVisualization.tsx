@@ -3,6 +3,7 @@ import { PieChart } from '@mui/x-charts/PieChart';
 
 import { ActivityCalendar } from 'react-activity-calendar'
 import { Row, Col } from 'react-bootstrap';
+import type { ThemeInput } from 'react-activity-calendar'
 import { numKnownWords, numSeenWords, getNumWordsPerLevel } from './storage.js';
 
 
