@@ -6,10 +6,12 @@ import { loadTopWords } from './storage.js';
 export default function FrequencyList() {
   const [words, setWords] = useState([]);
 
+
   useEffect(() => {
     async function loadWords() {
       const topWords = await loadTopWords(500);
       setWords(topWords);
+
     }
 
     loadWords();

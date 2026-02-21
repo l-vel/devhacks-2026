@@ -1,5 +1,5 @@
 
-async function privateLoadWordList() {
+export async function loadWordList() {
     const url = chrome.runtime.getURL("spanish.json");
     const res = await fetch(url);
     
@@ -8,7 +8,6 @@ async function privateLoadWordList() {
     
     const wordList = await res.json();   
     
-
     const map = new Map();
     for (const entry of wordList) {
         map.set(entry.word, entry);
@@ -28,6 +27,41 @@ export async function loadTopWords(limit) {
 
     return wordList.slice(0, limit); 
  
+}
+
+async function loadAllWords() {
+    const res = await fetch("/spanish.json");
+
+    if (!res.ok) throw new Error(`Failed to load spanish.json.`);
+
+
+    const wordList = await res.json();   
+
+    return wordList;
+ 
+}
+
+//returns an array with number of beginner words, 
+// intermediate words and advanced words
+export async function getNumWordsPerLevel() {
+  const numbersPerLevel = [0, 0, 0];
+
+  const wordList = await loadAllWords();
+
+  for (const word of wordList) {
+    if (word.cefr_level.includes("A")) {
+      numbersPerLevel[0]++;
+    } 
+    else if (word.cefr_level.includes("B")) {
+      numbersPerLevel[1]++;
+    } 
+    else if (word.cefr_level.includes("C")) {
+      numbersPerLevel[2]++;
+    }
+  }
+  console.log(numbersPerLevel);
+
+  return numbersPerLevel;
 }
 
 
