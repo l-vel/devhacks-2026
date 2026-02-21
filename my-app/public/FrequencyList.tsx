@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { loadTopWords } from './storage.js';
-
+import { Row } from "react-bootstrap";
 
 export default function FrequencyList() {
   const [words, setWords] = useState([]);
@@ -21,15 +21,21 @@ export default function FrequencyList() {
   return (
 
     <div className="container">
-      <h1 className="mt-3 pb-4">Top 500 Frequent Spanish Words</h1>
+      <h1 className="mt-3 pb-4 text-center">
+        Top 500 Frequent Spanish Words
+      </h1>
 
-      <div style={{ columnCount: 2, columnGap: "40px" }}>
-        {words.map((entry, index) => (
-          <div key={entry.word} style={{ textAlign: "left", marginBottom: "4px" }}>
-            {index + 1}. {entry.word}
+      <Row className="mb-5">
+        <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+          <div style={{ maxWidth: "1500px", columnCount: 2}}>
+            {words.map((entry, index) => (
+              <div key={entry.word} style={{ textAlign: "left", marginBottom: "4px", breakInside: "avoid" }}>
+                {index + 1}. {entry.word}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      </Row>
     </div>
 
   )
