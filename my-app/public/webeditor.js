@@ -202,7 +202,7 @@ function showWordDetails(word) {
   title.textContent = word;
 
   const closeBtn = document.createElement("button");
-  closeBtn.textContent = "X";
+  closeBtn.textContent = "XZZ";
   closeBtn.onclick = () => container.remove();
 
   header.appendChild(title);
