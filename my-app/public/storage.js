@@ -36,12 +36,20 @@ export async function toggleKnownWord(word) {
     const key = cleanWord(word);
     const isNew = !isKnownWord(key);
 
+    console.log("new word %s\n", word)
     if (isNew) {
         knownWords[key] = true;
     }
     else {
          delete knownWords[key];
     }  
+}
+
+export async function numKnownWords() {
+    const knownWords = await getKnownMap();
+
+    return knownWords.size();
+
 }
 
 export async function getSeenMap() {
@@ -72,12 +80,17 @@ export async function toggleSeenWord(word) {
     }  
 }
 
-export async function isUnknownWord(word){
+export async function numSeenWords() {
+    const seenWords = await getSeenMap();
+
+    return seenWords.size();
+
+}
+
+export async function isUnknownWord(word) {
 
     return !isKnownWord() && !isSeenWord();
 }
-
-
 
 function cleanWord(word) {
   return word.toLowerCase().trim();
