@@ -2,16 +2,16 @@ import { useEffect, useState } from "react";
 import { PieChart } from '@mui/x-charts/PieChart';
 
 import { ActivityCalendar } from 'react-activity-calendar'
-import type { ThemeInput } from 'react-activity-calendar';
 import { Row, Col } from 'react-bootstrap';
-// import { numKnownWords, numSeenWords, toggleKnownWord } from './storage.js';
-
+import type { ThemeInput } from 'react-activity-calendar';
+import { numKnownWords, numSeenWords, getNumWordsPerLevel } from './storage.js';
 
 
 export default function DataVisualization() {
 
   const [numSeen, setNumSeen] = useState(0);
   const [numKnown, setNumKnown] = useState(0);
+  const [numWordsPerLevel, setNumWordsPerLevel] = useState([]);
 
   const calendarTheme: ThemeInput = {
     light: ['#EBD4CB', '#B6465F'],
@@ -36,11 +36,14 @@ export default function DataVisualization() {
   ]
   useEffect(() => {
     async function loadStats() {
-      const seenWords = 5; // add stored code later
-      const knownWords = 5;
+     // const seenWords = await numSeenWords();
+     // const knownWords = await numKnownWords();
+      const numWords = await getNumWordsPerLevel();
 
-      setNumSeen(seenWords);
-      setNumKnown(knownWords);
+    //  setNumSeen(seenWords);
+     // setNumKnown(knownWords);
+      setNumWordsPerLevel(numWords);
+
     }
 
     loadStats();
@@ -75,7 +78,7 @@ export default function DataVisualization() {
                 data: [
                   { id: 0, value: 500, label: 'Known Words' },
                   { id: 1, value: 250, label: 'Seen Words' },
-                  { id: 2, value: 1500, label: 'Unknown Words' },
+                  { id: 2, value: numWordsPerLevel[0], label: 'Unknown Words' },
                 ],
               },
             ]}
@@ -93,7 +96,7 @@ export default function DataVisualization() {
                 data: [
                   { id: 0, value: 50, label: 'Known Words' },
                   { id: 1, value: 80, label: 'Seen Words' },
-                  { id: 2, value: 1500, label: 'Unknown Words' },
+                  { id: 2, value: numWordsPerLevel[1], label: 'Unknown Words' },
                 ],
               },
             ]}
@@ -111,7 +114,7 @@ export default function DataVisualization() {
                 data: [
                   { id: 0, value: 10, label: 'Known Words' },
                   { id: 1, value: 20, label: 'Seen Words' },
-                  { id: 2, value: 1500, label: 'Unknown Words' },
+                  { id: 2, value: numWordsPerLevel[2], label: 'Unknown Words' },
                 ],
               },
             ]}
