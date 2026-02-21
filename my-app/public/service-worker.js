@@ -50,7 +50,7 @@ async function handleWordUpdate(word, status) {
             if (cache.includes(word)) return true;
             cache.push(word);
             try {
-                await chrome.storage.local.set({ wordsSeen: JSON.stringify(cache) });
+                await chrome.storage.local.set({ wordsSeen: (cache) });
 
                 //remove from known
 
@@ -62,7 +62,7 @@ async function handleWordUpdate(word, status) {
                         knownCache.wordsKnown.splice(knownIndex, 1)
                     }
 
-                    await chrome.storage.local.set({ wordsKnown: JSON.stringify(knownCache) })
+                    await chrome.storage.local.set({ wordsKnown: (knownCache) })
                 }
             }
             catch (errIn) {
@@ -75,7 +75,7 @@ async function handleWordUpdate(word, status) {
             if (cache.includes(word)) return true;
             cache.push(word);
             try {
-                await chrome.storage.local.set({ wordsKnown: JSON.stringify(cache) });
+                await chrome.storage.local.set({ wordsKnown: (cache) });
 
                 //remove from seen 
 
@@ -86,7 +86,7 @@ async function handleWordUpdate(word, status) {
                     if (seenIndex >= 0) {
                         seenCache.wordsKnown.splice(seenIndex, 1)
                     }
-                    await chrome.storage.local.set({ wordsKnown: JSON.stringify(seenCache) })
+                    await chrome.storage.local.set({ wordsKnown: (seenCache) })
                 }
             }
             catch (errIn) {
@@ -108,7 +108,7 @@ async function handleWordUpdate(word, status) {
                 if (seenIndex >= 0) {
                     seenCache.wordsKnown.splice(seenIndex, 1);
                 }
-                await chrome.storage.local.set({ wordsKnown: JSON.stringify(seenCache) });
+                await chrome.storage.local.set({ wordsKnown: (seenCache) });
 
                 //remove from known
 
@@ -118,7 +118,7 @@ async function handleWordUpdate(word, status) {
                 if (knownIndex >= 0) {
                     knownCache.wordsKnown.splice(seenIndex, 1);
                 }
-                await chrome.storage.local.set({ wordsKnown: JSON.stringify(knownCache) });
+                await chrome.storage.local.set({ wordsKnown: (knownCache) });
                 }
             catch (errIn) {
                 console.log(errIn)
@@ -167,6 +167,7 @@ async function handleRequestActivityList() {
 
 async function handleRequestSeenList() {
     const rawData = await chrome.storage.local.get(["wordsSeen"]);
+    console.log(rawData);
     const seen = rawData.wordsSeen || []
     return seen;
 }
@@ -551,7 +552,7 @@ async function createSetSeededData() {
         seededData["2026-02-19"] = 3
         seededData["2026-02-20"] = 2
 
-        await chrome.storage.local.set({ wordsDayTracker: JSON.stringify(seededData) });
-        await chrome.storage.local.set({ seedStored: JSON.stringify(true) })
+        await chrome.storage.local.set({ wordsDayTracker: (seededData) });
+        await chrome.storage.local.set({ seedStored: (true) })
     }
 }
